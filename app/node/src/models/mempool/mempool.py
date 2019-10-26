@@ -35,10 +35,9 @@ def verify_code(code):
         return False
 
 
-async def add_transactions_to_mempool(connection, code, data, utctime):
+async def add_transactions_to_mempool(connection, code, transactions, utctime):
     if not verify_code(code):
         return {"message": "Invalid code"}
-    transactions = data["transactions"]
     valid_transaction = []
     invalid_transactions = []
     for transaction in transactions:
@@ -61,3 +60,14 @@ async def add_transactions_to_mempool(connection, code, data, utctime):
     else:
         return {"response": "error", "data": data}
 
+
+async def get_transactions_from_mempool(connection, code, parameters):
+    if not verify_code(code):
+        return {"message": "Invalid code"}
+    parameters = utils.clean_parameters(parameters)
+
+    transactions = await fetch.get_transactions_from_mempool(connection, parameters)
+    if transactions:
+        return {"response": "success", "data": transactions}
+    else:
+        return {"response": "error", "data": "No transactions available"}

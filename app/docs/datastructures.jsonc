@@ -1,0 +1,40 @@
+{
+    "add_transactions_to_mempool": {
+        "code": "001",
+        "data": {
+            "transactions": [{
+                "sender_address": "Bob",
+                "receiver_address": "Lisa",
+                "notes": "food",
+                "record": {
+                    "amount": 1.00,
+                    "sender": {
+                        "inputs": [],
+                        "outputs": []
+                    },
+                    "receiver": {
+                        "output": [1.00]
+                    },
+                    "fee": 0.01
+                }
+            }]
+        }
+    },
+    "get_transactions_from_mempool": {
+        "code": "002",
+        "data": {
+            "parameters": {
+                "prefered_order": [
+                    1, // fee
+                    2 // age
+                    // 3,
+                    // 4,
+                    // 5,
+                ],
+                "limit": [
+                    0 // all
+                ]
+            }
+        }
+    }
+}

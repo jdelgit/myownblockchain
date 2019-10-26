@@ -9,55 +9,63 @@ from .utils.response import json_success, json_error
 from .models.mempool import mempool
 
 
-"""
-request_structure = {
-    "code" : "001",
-    "data" : {
-        "transactions": [{
-            "sender": "Bob",
-            "receiver": "Lisa",
-            "notes": "food",
-            "record": {
-            	"amount": 1.00,
-            	"sender":{
-            		"inputs": [],
-            		"outputs":[]
-            	},
-            	"receiver":{
-            		"output":[1.00]
-            	},
-            "fee": 0.01
-            }
-        }]
-    }
-}
-
-"""
-
-
 async def add_transactions_to_mempool(request):
     requestdata = await request.json()
     code = requestdata.get("code")
     data = requestdata.get("data", {})
+
+    if "transactions" in data:
+        transctions = data["transactions"]
+    else:
+        return web.json_response(
+            json_error(
+                400,
+                "invalid transactions in request",
+                {"info": "no transactions in request"},
+            )
+        )
     dbpool = request.app["dbpool"]
     timestamp = utc()
     async with dbpool.acquire() as connection:
         result = await mempool.add_transactions_to_mempool(
-            connection, code, data, timestamp
+            connection, code, transctions, timestamp
         )
     if result["response"] == "success":
         return web.json_response(json_success({"data": result}))
     else:
         return web.json_response(
-            json_error(400, "invalid transactions in request", {"transactions": result})
+            json_error(400, "invalid transactions in request", {"info": result})
         )
 
 
-async def addblock(request):
-    pass
+async def get_transactions_from_mempool(request):
+    requestdata = await request.json()
+    code = requestdata.get("code")
+    data = requestdata.get("data")
+    if "parameters" in data:
+        parameters = data["parameters"]
+    else:
+        return web.json_response(
+            json_error(400, "invalid in request", {"info": "no parameters in request"})
+        )
+    dbpool = request.app["dbpool"]
+    async with dbpool.acquire() as connection:
+        result = await mempool.get_transactions_from_mempool(
+            connection, code, parameters
+        )
+    if result["response"] == "success":
+        return web.json_response(json_success({"data": result}))
+    else:
+        return web.json_response(
+            json_error(
+                400,
+                "Unable to retrieve transactions based on parameters",
+                {"info": result},
+            )
+        )
 
 
-async def getmempool(request):
+async def append_new_block(request):
     pass
 
 
@@ -90,8 +98,10 @@ async def create_app():
         init=init_connections,
     )
     app.add_routes([web.post("/api/newtransaction", add_transactions_to_mempool)])
-    app.add_routes([web.post("/api/addblock", addblock)])
-    app.add_routes([web.get("/api/getmempool", getmempool)])
+    app.add_routes(
+        [web.get("/api/get_transactions_from_mempool", get_transactions_from_mempool)]
+    )
+    app.add_routes([web.post("/api/append_block", append_new_block)])
     app.add_routes([web.post("/api/getchain", getchain)])
     app.add_routes([web.post("/api/getdifficulty", getdifficulty)])
     return app

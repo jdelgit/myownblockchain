@@ -12,8 +12,8 @@ async def add_transactions_to_mempool(connection, valid_transactions, utctime):
         result = await connection.executemany(
             f"""
                 INSERT INTO mempool(
-                   sender
-                  ,receiver
+                   sender_address
+                  ,receiver_address
                   ,notes
                   ,transacted_amount
                   ,sender_inputs

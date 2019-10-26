@@ -22,8 +22,8 @@ CREATE TABLE node_chain (
     transactions text
   );
 CREATE TABLE mempool (
-    sender text,
-    receiver text,
+    sender_address text,
+    receiver_address text,
     notes text,
     transacted_amount numeric,
     sender_inputs text,
