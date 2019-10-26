@@ -25,6 +25,10 @@ CREATE TABLE mempool (
     sender text,
     receiver text,
     notes text,
-    amount numeric,
-    fee numeric
+    transacted_amount numeric,
+    sender_inputs text,
+    sender_ouputs text,
+    receiver_outputs text,
+    transaction_fee numeric,
+    time_added timestamp
   );

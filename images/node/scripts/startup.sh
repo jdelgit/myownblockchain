@@ -4,5 +4,5 @@ until psql "postgresql://noderunner:capitulating@nodedb/nodedb" ; do
     sleep 15
     done
 adev runserver /srv/app/api/src &
-
+nginx;
 tail -f /dev/null

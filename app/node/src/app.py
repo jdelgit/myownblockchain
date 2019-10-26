@@ -1,12 +1,56 @@
 import asyncio
 import uvloop
-from aiohttp import web
 import asyncpg
 import json
+from aiohttp import web
+from .utils.utils import utc
+
+from .utils.response import json_success, json_error
+from .models.mempool import mempool
 
 
-async def add_transaction_to_mempool(request):
-    pass
+"""
+request_structure = {
+    "code" : "001",
+    "data" : {
+        "transactions": [{
+            "sender": "Bob",
+            "receiver": "Lisa",
+            "notes": "food",
+            "record": {
+            	"amount": 1.00,
+            	"sender":{
+            		"inputs": [],
+            		"outputs":[]
+            	},
+            	"receiver":{
+            		"output":[1.00]
+            	},
+            "fee": 0.01
+            }
+        }]
+    }
+}
+
+"""
+
+
+async def add_transactions_to_mempool(request):
+    requestdata = await request.json()
+    code = requestdata.get("code")
+    data = requestdata.get("data", {})
+    dbpool = request.app["dbpool"]
+    timestamp = utc()
+    async with dbpool.acquire() as connection:
+        result = await mempool.add_transactions_to_mempool(
+            connection, code, data, timestamp
+        )
+    if result["response"] == "success":
+        return web.json_response(json_success({"data": result}))
+    else:
+        return web.json_response(
+            json_error(400, "invalid transactions in request", {"transactions": result})
+        )
 
 
 async def addblock(request):
@@ -45,7 +89,7 @@ async def create_app():
         password="capitulating",
         init=init_connections,
     )
-    app.add_routes([web.get("/api/addtransaction", add_transaction_to_mempool)])
+    app.add_routes([web.post("/api/newtransaction", add_transactions_to_mempool)])
     app.add_routes([web.post("/api/addblock", addblock)])
     app.add_routes([web.get("/api/getmempool", getmempool)])
     app.add_routes([web.post("/api/getchain", getchain)])
