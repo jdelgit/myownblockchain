@@ -1,0 +1,62 @@
+version: "3.6"
+
+services:
+    node:
+        container_name: chain_node
+        image: chain_node_001
+        build:
+            context: ./images/node
+        expose:
+            - 8000
+        ports:
+            - "80:80"
+        networks:
+            - node
+            - miner
+        volumes:
+            - ./app/node:/srv/app/api
+        command: ["sh", "-c", "/startup.sh"]
+    nodedb:
+        container_name: node_db
+        build: ./images/nodedb
+        image: node_db_001
+        hostname: nodedb-docker
+        networks:
+            - node
+        ports:
+            - "5532:5432"
+        expose:
+            - 5432
+        volumes:
+            - "nodedb:/var/lib/postgresql/data"
+    miner:
+        container_name: chain_miner_001a
+        image: chain_miner
+        build:
+            context: ./images/miner
+        networks:
+            - node
+            - miner
+        volumes:
+            - ./app/miner:/srv/app/api
+        command: ["sh", "-c", "/startup.sh"]
+    minerdb:
+        container_name: miner_db
+        build: ./images/minerdb
+        image: miner_db_001
+        hostname: minerdb-docker
+        networks:
+            - miner
+        ports:
+            - "5542:5432"
+        expose:
+            - 5432
+        volumes:
+            - "minerdb:/var/lib/postgresql/data"
+networks:
+    node: null
+    miner: null
+
+volumes:
+    minerdb: null
+    nodedb: null
