@@ -16,7 +16,7 @@ async def calculate_block_hash(request):
     pass
 
 
-async def get_mempool(request):
+async def get_transactions_from_mempool(request):
     pass
 
 
@@ -24,7 +24,7 @@ async def validate_chain(request):
     pass
 
 
-async def get_chain(request):
+async def get_chain_from_node(request):
     pass
 
 
