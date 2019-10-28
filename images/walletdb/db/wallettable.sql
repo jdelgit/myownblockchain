@@ -16,8 +16,14 @@ SET
   client_min_messages = warning;
 SET
   row_security = off;
-CREATE TABLE keystore (
-    private_key text,
+CREATE TABLE keystore (private_key text, public_key text);
+CREATE TABLE wallet_transactions (
+    transaction_id text,
+    transaction_inputs text,
+    transaction_outputs text
+  );
+CREATE TABLE wallet_address (
     public_key text,
-    seed text
+    public_address text,
+    transaction_id text
   );

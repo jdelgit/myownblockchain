@@ -21,7 +21,8 @@ CREATE TABLE node_chain (
     block_hash text,
     transactions text
   );
-CREATE TABLE mempool (
+CREATE TABLE transactions (
+    transaction_id text,
     sender_address text,
     receiver_address text,
     notes text,
