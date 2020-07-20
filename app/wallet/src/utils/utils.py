@@ -1,13 +1,13 @@
 from datetime import datetime
-from .config import *
-from .seedwords import SEEDWORDS
+from utils.config import *
+from utils.seedwords import SEEDWORDS
 
 
 def utc():
     return datetime.utcnow()
 
 
-def validate_input_bool(message):
+def test_true(message):
 
     if message.lower() in ["y", "yes", "j", "ja"]:
         return True
