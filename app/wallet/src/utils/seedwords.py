@@ -1,3 +1,4 @@
+PRIVATEKEY_JOINSALT = "<lolcat>"
 SEEDWORDS = [
     "mirror",
     "lay",
