@@ -1,10 +1,19 @@
-from utils.utils import validate_seed_words, response
+from ...utils.utils import validate_seed_words
+from ...utils.config import SEED_LENGTH
 from ..keymanager import keymanager as km
-from utils.config import SEED_LENGTH
 import re
 
 
 async def setup_wallet_from_seed(input_seed=""):
+    """
+        Get generated private/public key pair
+
+    Args:
+        input_seed (list/str, optional): Seed to generate private key. Defaults to "".
+
+    Returns:
+        dict: Wallet seed along with private/public key pair
+    """
     wallet = []
     wallet_seed = []
     if input_seed:

@@ -9,9 +9,10 @@ RUN apk add build-base && \
     apk add build-base && \
     apk add libffi-dev
 
-RUN pip3 install --upgrade pip
 COPY ./config/requirements.txt /requirements.txt
-RUN pip3 install -r /requirements.txt
+
+RUN pip3 install --upgrade pip && \
+    pip3 install -r /requirements.txt
 
 COPY ./scripts/startup.sh /startup.sh
 RUN chmod +x /startup.sh

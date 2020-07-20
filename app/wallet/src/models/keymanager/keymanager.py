@@ -1,5 +1,5 @@
-from utils.seedwords import SEEDWORDS, PRIVATEKEY_JOINSALT
-from utils.config import SEED_LENGTH
+from ...utils.seedwords import SEEDWORDS, PRIVATEKEY_JOINSALT
+from ...utils.config import SEED_LENGTH
 import random
 import hashlib
 

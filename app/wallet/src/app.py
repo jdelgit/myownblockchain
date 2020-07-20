@@ -3,10 +3,18 @@ import uvloop
 import asyncpg
 import json
 from aiohttp import web
-from models.wallet import wallet as wl
+from .models.wallet import wallet as wl
+
+
+
+
+
+loop = uvloop.new_event_loop()
+loop.set_debug(True)
+asyncio.set_event_loop(loop)
 
 routes = web.RouteTableDef()
-app = web.Application()
+
 
 @routes.post('/api/setupwallet')
 async def setup_wallet_from_seed(request):
@@ -17,8 +25,12 @@ async def setup_wallet_from_seed(request):
     wallet = await wl.setup_wallet_from_seed(input_seed)
     return web.json_response(wallet)
 
-app.add_routes(routes)
+
+async def create_app():
+    app = web.Application()
+    app.add_routes(routes)
+    return app
 
 
-if __name__ == "__main__":
-    web.run_app(app)
+# if __name__ == "__main__":
+#     web.run_app(app)

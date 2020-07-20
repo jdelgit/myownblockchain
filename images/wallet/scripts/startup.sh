@@ -4,6 +4,6 @@ until psql "postgresql://walletuser:capitulating@walletdb/walletdb" ; do
     sleep 15
     done
 
-python3  /srv/app/api/src/app.py &
+adev runserver  /srv/app/api/src/ &
 
 tail -f /dev/null
