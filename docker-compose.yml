@@ -60,10 +60,14 @@ services:
         image: wallet_user
         build:
             context: ./images/wallet
+        expose:
+            - 8080
+        ports:
+            - "8080:80"
         networks:
             - node
         volumes:
-            - ./app/miner:/srv/app/api
+            - ./app/wallet:/srv/app/api
         command: ["sh", "-c", "/startup.sh"]
     walletdb:
         container_name: wallet_db
