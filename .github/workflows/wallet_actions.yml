@@ -23,7 +23,7 @@ jobs:
           pip install setuptools wheel
 
       - name: Install dependencies
-        run: python install -r ./images/wallet/config/requirements.txt
+        run: python install -r ${workspace}/images/wallet/config/requirements.txt
 
       - name: Run keymanager test
-        run: python .tests/testkeymanager.py
+        run: python ${workspace}/tests/testkeymanager.py
