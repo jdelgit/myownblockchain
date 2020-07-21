@@ -1,6 +1,6 @@
 from datetime import datetime
-from utils.config import *
-from utils.seedwords import SEEDWORDS
+from .config import *
+from .seedwords import SEEDWORDS
 
 
 def utc():

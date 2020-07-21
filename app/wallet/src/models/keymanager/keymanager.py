@@ -1,8 +1,10 @@
-from ...utils.seedwords import SEEDWORDS, PRIVATEKEY_JOINSALT
-from ...utils.config import SEED_LENGTH
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..')))
 import random
 import hashlib
-
+from utils.config import SEED_LENGTH
+from utils.seedwords import SEEDWORDS, PRIVATEKEY_JOINSALT
 
 """
     To Do:

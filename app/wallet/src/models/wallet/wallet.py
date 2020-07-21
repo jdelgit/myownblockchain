@@ -1,6 +1,10 @@
-from ...utils.utils import validate_seed_words
-from ...utils.config import SEED_LENGTH
-from ..keymanager import keymanager as km
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from utils.utils import validate_seed_words
+from utils.config import SEED_LENGTH
+from models.keymanager import keymanager as km
 import re
 
 
@@ -18,7 +22,7 @@ async def setup_wallet_from_seed(input_seed=""):
     wallet_seed = []
     if input_seed:
         if isinstance(input_seed, str):
-            wallet_seed = re.findall(r'[a-zA-z]+',input_seed)
+            wallet_seed = re.findall(r"[a-zA-z]+", input_seed)
         elif isinstance(input_seed, list):
             wallet_seed = input_seed
         seed_length_difference = SEED_LENGTH - len(wallet_seed)
