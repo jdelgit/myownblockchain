@@ -26,4 +26,4 @@ jobs:
         run: pip install -r ./images/wallet/config/requirements.txt
 
       - name: Run keymanager test
-        run: python ./tests/testkeymanager.py
+        run: python ./app/wallet/tests/testkeymanager.py
