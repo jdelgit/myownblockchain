@@ -18,7 +18,7 @@ jobs:
           python-version: '3.7'
 
       - name: Test path
-        run: echo "${ls -la}"
+        run: ls -la
       - name: Setup python requirements
         run: |
           python -m pip install --upgrade pip
