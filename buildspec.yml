@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Upgrade pip...
+      - python -m pip install --upgrade pip
+      - pip install setuptools wheel
+  pre_build:
+    commands:
+      - echo Install python modules...
+      - pip install -r ./images/wallet/config/requirements.txt
+  build:
+    commands:
+      - python ./app/wallet/tests/testkeymanager.py
+    # build
+artifacts:
+  files:
+    - "**/*"
+  discard-paths: no
+  base-directory: app
