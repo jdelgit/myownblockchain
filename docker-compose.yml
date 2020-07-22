@@ -1,6 +1,30 @@
 version: "3.6"
 
 services:
+    wallet:
+        container_name: wallet_user
+        image: wallet_user
+        build:
+            context: ./images/wallet
+        networks:
+            - node
+        volumes:
+            - ./app/wallet:/srv/app/api
+        command: ["sh", "-c", "/startup.sh"]
+    walletdb:
+        container_name: wallet_db
+        build: ./images/walletdb
+        image: wallet_db_001
+        hostname: walletdb-docker
+        networks:
+            - node
+        ports:
+            - "5552:5432"
+        expose:
+            - 5432
+        volumes:
+            - "walletdb:/var/lib/postgresql/data"
+
     # node:
     #     container_name: chain_node
     #     image: chain_node_001
@@ -54,34 +78,6 @@ services:
     #         - 5432
     #     volumes:
     #         - "minerdb:/var/lib/postgresql/data"
-
-    wallet:
-        container_name: wallet_user
-        image: wallet_user
-        build:
-            context: ./images/wallet
-        # expose:
-        #     - 8080
-        # ports:
-        #     - "80:8080"
-        networks:
-            - node
-        volumes:
-            - ./app/wallet:/srv/app/api
-        command: ["sh", "-c", "/startup.sh"]
-    walletdb:
-        container_name: wallet_db
-        build: ./images/walletdb
-        image: wallet_db_001
-        hostname: walletdb-docker
-        networks:
-            - node
-        ports:
-            - "5552:5432"
-        expose:
-            - 5432
-        volumes:
-            - "walletdb:/var/lib/postgresql/data"
 
 networks:
     node: null

@@ -1,0 +1,54 @@
+{
+    "containerDefinitions": [
+        {
+            "command": [
+                "sh",
+                "-c",
+                "/startup.sh"
+            ],
+            "essential": true,
+            "image": "wallet_user",
+            "mountPoints": [
+                {
+                    "containerPath": "/srv/app/api",
+                    "sourceVolume": "_AppWallet"
+                }
+            ],
+            "name": "wallet",
+            "memory": 256
+        },
+        {
+            "essential": true,
+            "image": "wallet_db_001",
+            "mountPoints": [
+                {
+                    "containerPath": "/var/lib/postgresql/data",
+                    "sourceVolume": "Walletdb"
+                }
+            ],
+            "name": "walletdb",
+            "memory": 256,
+            "portMappings": [
+                {
+                    "containerPort": 5432,
+                    "hostPort": 5552
+                }
+            ]
+        }
+    ],
+    "family": "",
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "./app/wallet"
+            },
+            "name": "_AppWallet"
+        },
+        {
+            "host": {
+                "sourcePath": "walletdb"
+            },
+            "name": "Walletdb"
+        }
+    ]
+}
