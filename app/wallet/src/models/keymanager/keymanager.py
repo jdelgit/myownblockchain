@@ -87,3 +87,8 @@ def generate_new_seed():
         seed_word = seeds.pop(seed_word_index)
         wallet_seed.append(seed_word)
     return wallet_seed
+
+
+def generate_address(public_key):
+    pass
+
