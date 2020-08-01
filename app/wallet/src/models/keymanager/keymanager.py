@@ -70,8 +70,7 @@ async def get_publickeys_with_privatekey(private_key, dbonn):
         [list]: List of all available public key related to a given private key
     """
 
-    pubkeys = await fetch_public_keys(private_key, dbonn)
-    return pubkeys
+    return await fetch_public_keys(private_key, dbonn)
 
 
 def generate_private_key(seed=[]):

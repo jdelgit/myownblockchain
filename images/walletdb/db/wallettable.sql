@@ -16,14 +16,25 @@ SET
   client_min_messages = warning;
 SET
   row_security = off;
-CREATE TABLE keystore (private_key text, public_key text);
+CREATE TABLE keystore (
+    public_key text  NOT NULL,
+    private_key text  NOT NULL,
+    nonce integer  NOT NULL,
+    PRIMARY KEY (public_key)
+  );
 CREATE TABLE wallet_transactions (
-    transaction_id text,
+    transaction_id int  GENERATED ALWAYS AS IDENTITY,
     transaction_inputs text,
-    transaction_outputs text
+    transaction_outputs text,
+    PRIMARY KEY (transaction_id)
   );
 CREATE TABLE wallet_address (
-    public_key text,
-    public_address text,
-    transaction_id text
+    address_id int  GENERATED ALWAYS AS IDENTITY,
+    public_key text NOT NULL,
+    public_address text  NOT NULL,
+    nonce integer  NOT NULL,
+    PRIMARY KEY (address_id),
+    CONSTRAINT fk_pubkey
+      FOREIGN KEY(public_key)
+        REFERENCES keystore(public_key)
   );

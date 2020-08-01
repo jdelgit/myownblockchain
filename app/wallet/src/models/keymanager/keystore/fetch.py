@@ -11,5 +11,4 @@ async def fetch_public_keys(private_key, dbconn):
             """,
             private_key,
         )
-    for record in records:
-        yield record_to_dict(record)
+    return [record_to_dict(record) for record in records]
