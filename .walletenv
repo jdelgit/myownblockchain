@@ -1,0 +1,4 @@
+POSTGRES_PASSWORD=P5ve6r&
+DBUSER=walletuser
+DBPASS=capitulating
+DBNAME=walletdb

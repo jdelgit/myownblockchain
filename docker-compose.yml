@@ -79,6 +79,38 @@ services:
     #     volumes:
     #         - "minerdb:/var/lib/postgresql/data"
 
+    wallet:
+        container_name: wallet_user
+        image: wallet_user
+        env_file:
+            - .walletenv
+        build:
+            context: ./images/wallet
+        # expose:
+        #     - 8080
+        # ports:
+        #     - "80:8080"
+        networks:
+            - node
+        volumes:
+            - ./app/wallet:/srv/app/api
+        command: ["sh", "-c", "/startup.sh"]
+    walletdb:
+        container_name: wallet_db
+        build: ./images/walletdb
+        image: wallet_db_001
+        hostname: walletdb-docker
+        env_file:
+            - .walletenv
+        networks:
+            - node
+        ports:
+            - "5552:5432"
+        expose:
+            - 5432
+        volumes:
+            - "walletdb:/var/lib/postgresql/data"
+
 networks:
     node: null
     # miner: null
