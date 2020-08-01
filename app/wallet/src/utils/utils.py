@@ -32,6 +32,7 @@ def validate_seed_words(seed_words):
         return False
     return input_set.issubset(master_set)
 
+
 def record_to_dict(record):
     """
 
@@ -43,6 +44,6 @@ def record_to_dict(record):
         dict: Record converted to dict
     """
     record_data = {}
-    for fieldnames,field in record.items():
+    for fieldnames, field in record.items():
         record_data[fieldnames] = field
     return record_data

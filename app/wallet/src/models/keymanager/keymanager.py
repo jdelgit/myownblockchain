@@ -1,16 +1,78 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 import random
 import hashlib
 from utils.config import SEED_LENGTH
 from utils.seedwords import SEEDWORDS, PRIVATEKEY_JOINSALT
+from models.keymanager.keystore.update import (
+    add_address_to_database,
+    add_key_pair_to_database,
+)
+from models.keymanager.keystore.fetch import fetch_public_keys
 
 """
     To Do:
     generate_digital_signature
 
 """
+
+
+async def generate_keypair_from_seed(seed, dbconn=None):
+    """
+        Generate public/private key pair from wallet seed
+
+    Args:
+        seed (list/str,optional): Seed phrase for generating private key
+
+    Returns:
+        dict: Wallet seeds along with generated public/private key pair
+    """
+    if not seed:
+        seed = ""
+    result = {"wallet_seed": seed}
+    private_key = generate_private_key(seed)
+    keypair = generate_keypair_from_privatekey(private_key)
+    result.update(keypair)
+    success = False
+    if dbconn:
+        success = await add_key_pair_to_database(result, dbconn)
+    return result
+
+
+async def get_publickeys_with_seed(seed, dbonn):
+    """
+
+        Convert the seed to a privatekey
+        Then use the private key to get the previously generated publickeys
+    Args:
+        seed (list/str): Seed phrase for generating private key
+        dbconn (asyncpg.pool): Database connection
+
+    Returns:
+        [list]: List of all available public key related to a given private key
+    """
+    private_key = generate_private_key(seed)
+    pubkeys = await get_publickeys_with_privatekey(private_key)
+
+    return pubkeys
+
+
+async def get_publickeys_with_privatekey(private_key, dbonn):
+    """
+        Use the private key to get the previously generated publickeys
+    Args:
+        private_key (str):  Hex representation of sha256 encoded seed
+        dbconn (asyncpg.pool): Database connection
+
+    Returns:
+        [list]: List of all available public key related to a given private key
+    """
+
+    pubkeys = await fetch_public_keys(private_key, dbonn)
+    return pubkeys
+
 
 def generate_private_key(seed=[]):
     """
@@ -43,21 +105,6 @@ def generate_public_key(private_key="", nonce=0):
     return hashlib.sha256(nonced_private_key_bytes).hexdigest()
 
 
-def generate_keypair_from_seed(wallet_seed=[]):
-    """
-        Generate public/private key pair from wallet seed
-
-    Args:
-        wallet_seed (list/str,optional): Seed phrase for generating private key
-
-    Returns:
-        dict: Wallet seeds along with generated public/private key pair
-    """
-    private_key = generate_private_key(wallet_seed)
-    public_key = generate_public_key(private_key)
-    return {"private": private_key, "public": public_key, "wallet_seed": wallet_seed}
-
-
 def generate_keypair_from_privatekey(private_key, nonce=0):
     """
         Generate public/private key pair from private key
@@ -69,7 +116,7 @@ def generate_keypair_from_privatekey(private_key, nonce=0):
         dict: Generated public key pair
     """
     public_key = generate_public_key(private_key, nonce)
-    return {"private": private_key, "public": public_key}
+    return {"private": private_key, "public": public_key, "nonce": nonce}
 
 
 def generate_new_seed():
@@ -89,6 +136,25 @@ def generate_new_seed():
     return wallet_seed
 
 
-def generate_address(public_key):
-    pass
+async def generate_new_address(public_key, nonce, dbconn):
+    """
+        Generate a new address based on a public key
+        Then add it to the wallet database
 
+    Args:
+        public_key (str): Hex string public private key
+        nonce (int): Nonce to generate new address for the public keyu
+    """
+
+    nonced_pub_key = f"{public_key}{nonce}"
+    nonced_pub_key_bytes = str.encode(nonced_pub_key)
+    address = hashlib.sha256(nonced_pub_key_bytes).hexdigest()
+    success = await add_address_to_database(public_key, address, nonce, dbconn)
+    if success:
+        return address
+    else:
+        return ""
+
+
+async def get_address_list(public_key, dbconn):
+    pass

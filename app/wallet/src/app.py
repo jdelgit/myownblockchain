@@ -1,12 +1,11 @@
 import asyncio
-import uvloop
 import asyncpg
-import json
+from uvloop import new_event_loop
 from aiohttp import web
 from .models.wallet import wallet as wl
-import os
+from os import environ
 
-loop = uvloop.new_event_loop()
+loop = new_event_loop()
 loop.set_debug(True)
 asyncio.set_event_loop(loop)
 routes = web.RouteTableDef()
@@ -18,8 +17,26 @@ async def setup_wallet_from_seed(request):
     input_seed = []
     if "wallet_seed" in request_json:
         input_seed = request_json["wallet_seed"]
-    wallet = await wl.setup_wallet_from_seed(input_seed)
+    pool = request.app["pool"]
+    async with pool.acquire() as dbconnection:
+        wallet = await wl.setup_wallet_from_seed(input_seed, dbconnection)
     return web.json_response(wallet)
+
+
+@routes.post("/api/getpublickeys")
+async def get_wallet_transactions(request):
+    response = []
+    private_key = ""
+    request_json = await request.json()
+    pool = request.app["pool"]
+    async with pool.acquire() as dbconnection:
+        if "private_key" in request_json:
+            private_key = request_json["private_key"]
+            response = await wl.get_pubkeys_from_privatekey(private_key, dbconnection)
+        elif "seed" in request_json:
+            seed = request_json["seed"]
+            response = await wl.get_pubkeys_from_seed(seed, dbconnection)
+    return web.json_response(response)
 
 
 @routes.post("/api/createaddress")
