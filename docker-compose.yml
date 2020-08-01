@@ -58,6 +58,8 @@ services:
     wallet:
         container_name: wallet_user
         image: wallet_user
+        env_file:
+            - .walletenv
         build:
             context: ./images/wallet
         # expose:
@@ -74,6 +76,8 @@ services:
         build: ./images/walletdb
         image: wallet_db_001
         hostname: walletdb-docker
+        env_file:
+            - .walletenv
         networks:
             - node
         ports:
