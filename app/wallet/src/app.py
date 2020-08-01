@@ -66,10 +66,10 @@ async def get_wallet_transactions(request):
 async def app():
     app = web.Application()
     app["pool"] = await asyncpg.create_pool(
-        database="walletdb",
-        user="walletuser",
+        database=environ["DBNAME"],
+        user=environ["DBUSER"],
         host="wallet_db",
-        password="capitulating",
+        password=environ["DBPASS"],
     )
     app.add_routes(routes)
     return app
