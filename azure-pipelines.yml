@@ -27,3 +27,17 @@ stages:
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Build services'
         nopIfNoDockerComposeFile: true
+- stage: Deploy
+  displayName: Deply Services
+  jobs:  
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: 'ubuntu-lates'
+    steps:
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: 'Developers Subscription(10c93541-a379-49d2-a612-8d3e1669dc02)'
+        dockerComposeFile: '**/docker-compose.yml'
+        action: 'Run services'
