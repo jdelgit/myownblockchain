@@ -33,7 +33,7 @@ stages:
   - job: Deploy
     displayName: Deploy
     pool:
-      vmImage: 'ubuntu-lates'
+      vmImage: 'ubuntu-latest'
     steps:
     - task: DockerCompose@0
       inputs:
